@@ -20,18 +20,20 @@ describe('rng', () => {
 
 describe('plan', () => {
   it('loops back to the start and stays in bounds', () => {
-    const steps = plan('active', 100, 20, 500, rng('seed'));
-    const walks = steps.filter((s) => s.action === 'walk');
-    expect(walks[walks.length - 1].to).toBe(100);
-    for (const w of walks) {
-      expect(w.to).toBeGreaterThanOrEqual(20);
-      expect(w.to).toBeLessThanOrEqual(500);
+    const steps = plan('active', 100, 200, { minX: 20, maxX: 500, minY: 180, maxY: 240 }, rng('seed'));
+    const moves = steps.filter((s) => s.to !== undefined);
+    expect(moves[moves.length - 1]).toMatchObject({ action: 'walk', to: 100, toY: 200 });
+    for (const m of moves) {
+      expect(m.to).toBeGreaterThanOrEqual(20);
+      expect(m.to).toBeLessThanOrEqual(500);
+      expect(m.toY).toBeGreaterThanOrEqual(180);
+      expect(m.toY).toBeLessThanOrEqual(240);
     }
   });
 
   it('hops more at a party', () => {
     const count = (mood: 'party' | 'active') =>
-      Array.from({ length: 50 }, (_, i) => plan(mood, 0, 0, 400, rng(`u${i}`)))
+      Array.from({ length: 50 }, (_, i) => plan(mood, 0, 0, { minX: 0, maxX: 400, minY: 0, maxY: 50 }, rng(`u${i}`)))
         .flat()
         .filter((s) => s.action === 'happy').length;
     expect(count('party')).toBeGreaterThan(count('active'));
@@ -63,11 +65,20 @@ describe('keyframes', () => {
   ]);
 
   it('moves relative to the start position', () => {
-    expect(css).toContain('33.333%{transform:translateX(70px)}');
+    expect(css).toContain('33.333%{transform:translate(70px,0px)}');
   });
 
   it('shows happy eyes only while hopping', () => {
     expect(css).toMatch(/@keyframes eh-a1\{0%\{opacity:0\}33\.333%\{opacity:1\}66\.667%\{opacity:0\}/);
+  });
+
+  it('turns to face the way it walks', () => {
+    expect(css).toContain('@keyframes fc-a1{0%{transform:scaleX(1)}33.333%{transform:scaleX(1)}66.667%{transform:scaleX(-1)}100%{transform:scaleX(-1)}}');
+  });
+
+  it('shrinks with distance when given a depth', () => {
+    const deep = keyframes('d', 0, [{ action: 'walk', dur: 1, to: 10, toY: 100 }], { y0: 0, depth: (y) => 1 - y / 200 });
+    expect(deep).toContain('100%{transform:translate(10px,100px) scale(0.5)}');
   });
 
   it('loops every rule over the whole plan', () => {

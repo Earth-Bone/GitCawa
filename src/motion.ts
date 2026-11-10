@@ -8,9 +8,19 @@ export interface Step {
   dur: number;
   /** x to reach by the end of the step; a short idle step with `to` warps */
   to?: number;
+  /** y to reach by the end of the step, for actors that roam in depth */
+  toY?: number;
+}
+
+export interface Box {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
 }
 
 const WALK_SPEED = 36; // px per second
+const HOP_SPEED = 55; // px per second while hopping along
 const WALK_PERIOD = 0.7;
 const HOP_PERIOD = 1;
 const BREATH_PERIOD = 2.4;
@@ -24,18 +34,30 @@ export function rng(seed: string): () => number {
   return () => (s = (s * 16807) % 2147483647) / 2147483647;
 }
 
-/** a looping plan that starts and ends at x0 */
-export function plan(mood: Exclude<Mood, 'sleepy'>, x0: number, minX: number, maxX: number, rand: () => number): Step[] {
-  const happyChance = mood === 'party' ? 0.5 : 0.15;
+/**
+ * A looping plan that starts and ends at (x0, y0): wander to a few spots in
+ * `box`, sometimes hopping along the way, and rest or hop in place between.
+ */
+export function plan(mood: Exclude<Mood, 'sleepy'>, x0: number, y0: number, box: Box, rand: () => number): Step[] {
+  const playChance = mood === 'party' ? 0.6 : 0.3;
   const steps: Step[] = [];
   let x = x0;
-  for (let i = 0; i < 3; i++) {
-    const to = Math.round(minX + rand() * (maxX - minX));
-    steps.push({ action: 'walk', dur: walkTime(x, to), to });
+  let y = y0;
+  const move = (to: number, toY: number, hop: boolean) => {
+    const dist = Math.hypot(to - x, toY - y);
+    steps.push(
+      hop
+        ? { action: 'happy', dur: Math.max(1, Math.round(dist / HOP_SPEED)), to, toY }
+        : { action: 'walk', dur: walkTime(0, dist), to, toY },
+    );
     x = to;
-    steps.push(rand() < happyChance ? { action: 'happy', dur: 2 } : { action: 'idle', dur: 1 + Math.round(rand() * 2) });
+    y = toY;
+  };
+  for (let i = 0; i < 4; i++) {
+    move(Math.round(box.minX + rand() * (box.maxX - box.minX)), Math.round(box.minY + rand() * (box.maxY - box.minY)), rand() < playChance);
+    steps.push(rand() < playChance / 2 ? { action: 'happy', dur: 1 } : { action: 'idle', dur: 1 + Math.round(rand() * 2) });
   }
-  steps.push({ action: 'walk', dur: walkTime(x, x0), to: x0 });
+  move(x0, y0, false);
   steps.push({ action: 'idle', dur: 1.5 });
   return steps;
 }
@@ -85,20 +107,40 @@ const fx = (n: number, d = 2) => Number(n.toFixed(d)).toString();
  * `.pos`, `.body-g`, `.eyes-happy`, `.spark` and `.lid` inside an element
  * with class `id`.
  */
-export function keyframes(id: string, x0: number, steps: Step[]): string {
-  const segs: { action: Action; t0: number; t1: number; x0: number; x1: number }[] = [];
+export function keyframes(
+  id: string,
+  x0: number,
+  steps: Step[],
+  { y0 = 0, depth }: { y0?: number; depth?: (y: number) => number } = {},
+): string {
+  const segs: { action: Action; t0: number; t1: number; x0: number; x1: number; y0: number; y1: number }[] = [];
   let t = 0;
   let x = x0;
+  let y = y0;
   for (const s of steps) {
     const x1 = s.to ?? x;
-    segs.push({ action: s.action, t0: t, t1: t + s.dur, x0: x, x1 });
+    const y1 = s.toY ?? y;
+    segs.push({ action: s.action, t0: t, t1: t + s.dur, x0: x, x1, y0: y, y1 });
     t += s.dur;
     x = x1;
+    y = y1;
   }
   const T = fx(t);
   const pct = (s: number) => fx((s / t) * 100, 3) + '%';
 
-  const pos = segs.map((s) => `${pct(s.t0)}{transform:translateX(${s.x0 - x0}px)}${pct(s.t1)}{transform:translateX(${s.x1 - x0}px)}`).join('');
+  const at = (px: number, py: number) =>
+    `{transform:translate(${px - x0}px,${py - y0}px)${depth ? ` scale(${fx(depth(py), 3)})` : ''}}`;
+  const pos = segs.map((s) => `${pct(s.t0)}${at(s.x0, s.y0)}${pct(s.t1)}${at(s.x1, s.y1)}`).join('');
+
+  // face the way the actor is heading; keep the last facing while standing still
+  let facing = 1;
+  const face = segs
+    .map((s) => {
+      if (s.x1 !== s.x0 && Math.abs(s.x1 - s.x0) < 300) facing = s.x1 < s.x0 ? -1 : 1;
+      return `${pct(s.t0)}{transform:scaleX(${facing})}`;
+    })
+    .join('');
+
   let body = '';
   const toggles: Record<'eh' | 'ld', [string, number][]> = { eh: [], ld: [] };
   const n = Math.round(t / SAMPLE);
@@ -121,7 +163,9 @@ export function keyframes(id: string, x0: number, steps: Step[]): string {
     `@keyframes body-${id}{${body}}`,
     `@keyframes eh-${id}{${eh}}`,
     `@keyframes ld-${id}{${ld}}`,
+    `@keyframes fc-${id}{${face}100%{transform:scaleX(${facing})}}`,
     `.${id} .pos{animation:pos-${id} ${T}s linear infinite}`,
+    `.${id} .face{animation:fc-${id} ${T}s step-end infinite}`,
     `.${id} .body-g{animation:body-${id} ${T}s linear infinite}`,
     `.${id} .eyes-happy{animation:eh-${id} ${T}s step-end infinite}`,
     `.${id} .spark{animation:eh-${id} ${T}s step-end infinite,twinkle 1s ease-in-out infinite}`,
