@@ -13,7 +13,7 @@ const app = new Hono<Env>();
 app.get('/', (c) =>
   c.text(
     [
-      'chiicawa: GitHub 활동으로 먼작귀 친구들을 키워요 (비공식 팬 프로젝트)',
+      'GitCawa: GitHub 활동으로 먼작귀 친구들을 키워요 (비공식 팬 프로젝트)',
       '',
       `farm: ${new URL(c.req.url).origin}/farm/{username}`,
       `line: ${new URL(c.req.url).origin}/line/{username}?pet=chiikawa|hachiware|usagi|momonga`,

@@ -58,7 +58,7 @@ export async function fetchActivity(login: string, token: string, now = new Date
     headers: {
       authorization: `bearer ${token}`,
       'content-type': 'application/json',
-      'user-agent': 'chiicawa',
+      'user-agent': 'gitcawa',
     },
     body: JSON.stringify({
       query: QUERY,
