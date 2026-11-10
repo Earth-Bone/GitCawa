@@ -8,7 +8,9 @@
     "deploy": "wrangler deploy",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "sprites": "design/.venv/bin/python -I design/tools/export_sprites.py"
+    "sprites": "design/.venv/bin/python -I design/tools/export_sprites.py",
+    "font": "design/.venv/bin/python -I design/tools/export_font.py",
+    "background": "design/.venv/bin/python -I design/tools/export_background.py"
   },
   "dependencies": {
     "hono": "^4.13.17"
