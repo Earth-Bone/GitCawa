@@ -6,7 +6,7 @@ export interface Step {
   action: Action;
   /** seconds */
   dur: number;
-  /** target x for walk steps */
+  /** x to reach by the end of the step; a short idle step with `to` warps */
   to?: number;
 }
 
@@ -90,7 +90,7 @@ export function keyframes(id: string, x0: number, steps: Step[]): string {
   let t = 0;
   let x = x0;
   for (const s of steps) {
-    const x1 = s.action === 'walk' && s.to !== undefined ? s.to : x;
+    const x1 = s.to ?? x;
     segs.push({ action: s.action, t0: t, t1: t + s.dur, x0: x, x1 });
     t += s.dur;
     x = x1;

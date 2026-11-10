@@ -160,15 +160,19 @@ export function line(username: string, p: Progress, pet: CharacterId): string {
   if (p.mood === 'sleepy') {
     who = sleeper(pet, 262, 30, 76, tag);
   } else {
+    // start on screen so the first frame is never empty, exit right, come back from the left
     const steps: Step[] = [
-      { action: 'walk', dur: 8, to: 220 },
+      { action: 'idle', dur: 1 },
+      { action: 'walk', dur: 5.5, to: 220 },
       { action: p.mood === 'party' ? 'happy' : 'idle', dur: 2 },
       { action: 'walk', dur: 7, to: 460 },
       { action: 'idle', dur: 2 },
       { action: 'walk', dur: 7, to: 700 },
+      { action: 'idle', dur: 0.05, to: -90 },
+      { action: 'walk', dur: 3, to: 20 },
     ];
-    css = keyframes('l0', -90, steps);
-    who = actor('l0', pet, -90, 30, 76, tag);
+    css = keyframes('l0', 20, steps);
+    who = actor('l0', pet, 20, 30, 76, tag);
   }
   const body =
     `<rect width="600" height="130" fill="var(--sky)"/><rect y="96" width="600" height="34" fill="var(--grass)"/>` +
