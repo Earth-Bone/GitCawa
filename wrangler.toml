@@ -1,0 +1,5 @@
+name = "chiicawa"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+
+# GITHUB_TOKEN is a secret: `wrangler secret put GITHUB_TOKEN`
