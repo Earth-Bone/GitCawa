@@ -4,17 +4,17 @@ GitHub 활동으로 먼작귀 친구들을 키우는 README 위젯이에요. 커
 
 > 비공식 팬 프로젝트예요. 치이카와와 등장 캐릭터의 권리는 나가노 작가와 치이카와 위원회에 있어요. 수익을 내지 않으며, 권리자의 요청이 있으면 바로 내리거나 수정할게요.
 
-![farm](docs/farm.png)
+<img src="https://gitcawa.gitcawa.workers.dev/farm/minwoo-3" width="600" alt="GitCawa farm" />
 
-![line](docs/line.png)
+<img src="https://gitcawa.gitcawa.workers.dev/line/minwoo-3?pet=momonga" width="600" alt="GitCawa line" />
 
 ## 사용법
 
-README에 이미지로 넣으면 돼요. `{host}`는 배포한 주소예요.
+README에 이미지로 넣으면 돼요. `{username}` 자리에 GitHub 아이디를 넣으세요.
 
 ```md
-<img src="https://{host}/farm/{username}" width="600" alt="GitCawa farm" />
-<img src="https://{host}/line/{username}?pet=hachiware" width="600" alt="GitCawa line" />
+<img src="https://gitcawa.gitcawa.workers.dev/farm/{username}" width="600" alt="GitCawa farm" />
+<img src="https://gitcawa.gitcawa.workers.dev/line/{username}?pet=hachiware" width="600" alt="GitCawa line" />
 ```
 
 | 주소 | 내용 |
