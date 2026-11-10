@@ -5,7 +5,36 @@ const base: Activity = { commits: 0, mergedPrs: 0, recentDays: [0, 0, 0], merged
 
 describe('progress', () => {
   it('starts a new user with chiikawa at grade 5', () => {
-    expect(progress(base)).toEqual({ commits: 0, mergedPrs: 0, points: 0, level: 1, grade: 5, unlocked: ['chiikawa'], mood: 'sleepy' });
+    expect(progress(base)).toEqual({
+      commits: 0,
+      mergedPrs: 0,
+      points: 0,
+      level: 1,
+      toNextLevel: 50,
+      grade: 5,
+      unlocked: ['chiikawa'],
+      pets: [{ id: 'chiikawa', level: 1 }],
+      nextPet: { id: 'hachiware', need: 50 },
+      mood: 'sleepy',
+    });
+  });
+
+  it('levels each pet from the points earned since it joined', () => {
+    expect(progress({ ...base, commits: 260 }).pets).toEqual([
+      { id: 'chiikawa', level: 6 },
+      { id: 'hachiware', level: 5 },
+      { id: 'usagi', level: 3 },
+    ]);
+  });
+
+  it('counts down to the next level and the next pet', () => {
+    const p = progress({ ...base, commits: 120 });
+    expect(p.toNextLevel).toBe(30);
+    expect(p.nextPet).toEqual({ id: 'usagi', need: 30 });
+  });
+
+  it('has no next pet once everyone joined', () => {
+    expect(progress({ ...base, commits: 400 }).nextPet).toBeNull();
   });
 
   it('counts commits once and merged PRs ten times', () => {
