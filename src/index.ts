@@ -49,7 +49,8 @@ async function withProgress(c: Context<Env>, draw: (user: string, p: Progress) =
   let activity;
   try {
     activity = await fetchActivity(user, c.env.GITHUB_TOKEN);
-  } catch {
+  } catch (err) {
+    console.error(`GitHub request for ${user} failed:`, err instanceof Error ? err.message : err);
     return svg(c, message('GitHub에서 정보를 가져오지 못했어요. 잠시 후 다시 열어 주세요'), 502, 60);
   }
   if (!activity) return svg(c, message(`@${user} 사용자를 찾지 못했어요`), 404, 300);
