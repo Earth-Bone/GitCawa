@@ -28,7 +28,6 @@ const BASE_CSS = `
 @keyframes lid{0%,93%{opacity:0}93.5%,96.5%{opacity:1}97%,100%{opacity:0}}
 @keyframes twinkle{0%,100%{transform:scale(.6)}50%{transform:scale(1.1)}}
 @keyframes zzz{0%{transform:translate(0,4px);opacity:0}30%{opacity:1}100%{transform:translate(6px,-8px);opacity:0}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important}}
 `;
 
 /** text width from the embedded font's glyph advances */
