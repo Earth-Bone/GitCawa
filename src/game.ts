@@ -15,6 +15,8 @@ export interface Activity {
 export type Mood = 'party' | 'active' | 'sleepy';
 
 export interface Progress {
+  commits: number;
+  mergedPrs: number;
   points: number;
   level: number;
   /** 초사 검정 grade, 5 (lowest) to 1 */
@@ -31,6 +33,8 @@ const MAX_LEVEL = 99;
 export function progress(a: Activity): Progress {
   const points = a.commits * POINTS_PER_COMMIT + a.mergedPrs * POINTS_PER_MERGED_PR;
   return {
+    commits: a.commits,
+    mergedPrs: a.mergedPrs,
     points,
     level: Math.min(MAX_LEVEL, 1 + Math.floor(points / 50)),
     grade: 5 - GRADE_STEPS.filter((s) => points >= s).length,

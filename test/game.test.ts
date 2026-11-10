@@ -5,7 +5,7 @@ const base: Activity = { commits: 0, mergedPrs: 0, recentDays: [0, 0, 0], merged
 
 describe('progress', () => {
   it('starts a new user with chiikawa at grade 5', () => {
-    expect(progress(base)).toEqual({ points: 0, level: 1, grade: 5, unlocked: ['chiikawa'], mood: 'sleepy' });
+    expect(progress(base)).toEqual({ commits: 0, mergedPrs: 0, points: 0, level: 1, grade: 5, unlocked: ['chiikawa'], mood: 'sleepy' });
   });
 
   it('counts commits once and merged PRs ten times', () => {
