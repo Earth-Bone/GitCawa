@@ -114,14 +114,18 @@ GitHub 프로필 설정에서 "Private contributions"를 켜면 개수만 포함
 
 전체 내역은 [릴리즈](https://github.com/Earth-Bone/GitCawa/releases)에서 볼 수 있어요.
 
+**v0.3.1-beta** (2026-11-11)
+
+- Windows에서 농장이 멈춰 보이던 문제를 고쳤어요. 이제 "애니메이션 효과"가 꺼진 컴퓨터에서도 친구들이 움직여요.
+
+<details>
+<summary>이전 버전</summary>
+
 **v0.3.0-beta** (2026-11-10)
 
 - 친구들이 들판 앞뒤로 뛰어다녀요. 멀리 가면 작아지고, 가까이 오면 커져요.
 - 신나면 깡충깡충 뛰면서 이동해요.
 - 가는 방향을 바라보고, 발밑에 그림자가 생겨요.
-
-<details>
-<summary>이전 버전</summary>
 
 **v0.2.0-beta** (2026-11-10)
 
