@@ -70,3 +70,19 @@ describe('mood', () => {
     expect(progress({ ...base, recentDays: [0, 0, 0, 9] }).mood).toBe('sleepy');
   });
 });
+
+describe('README example', () => {
+  it('matches the worked example: 120 commits and 5 merged PRs', () => {
+    const p = progress({ ...base, commits: 120, mergedPrs: 5 });
+    expect(p.points).toBe(170);
+    expect(p.level).toBe(4);
+    expect(p.toNextLevel).toBe(30);
+    expect(p.grade).toBe(4);
+    expect(p.nextPet).toEqual({ id: 'momonga', need: 230 });
+    expect(p.pets).toEqual([
+      { id: 'chiikawa', level: 4 },
+      { id: 'hachiware', level: 3 },
+      { id: 'usagi', level: 1 },
+    ]);
+  });
+});
