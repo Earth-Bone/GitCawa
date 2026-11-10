@@ -2,6 +2,8 @@
 
 GitHub에서 활동할수록 먼작귀 친구들이 자라는 README 농장이에요.
 
+**현재 버전: v0.1.0-beta** (베타라 규칙과 모양이 바뀔 수 있어요) · [업데이트 내역](#업데이트-내역)
+
 <img src="https://gitcawa.gitcawa.workers.dev/farm/minwoo-3" width="100%" alt="GitCawa farm" />
 
 > 비공식 팬 프로젝트예요. 치이카와와 등장 캐릭터의 권리는 나가노 작가와 치이카와 위원회에 있어요. 수익을 내지 않으며, 권리자가 요청하면 바로 내릴게요.
@@ -56,6 +58,23 @@ GitHub에서 활동할수록 먼작귀 친구들이 자라는 README 농장이�
 - 이미지는 30분마다 새로 그려요. 방금 한 커밋은 조금 늦게 반영될 수 있어요.
 - 공개 활동만 세요. 비공개 저장소 커밋은 GitHub 설정에서 "Private contributions"를 켜야 포함돼요.
 - 친구 한 마리만 걷는 한 줄짜리 이미지도 있어요: `/line/{username}?pet=chiikawa` (`hachiware`, `usagi`, `momonga`도 가능)
+
+## 업데이트 내역
+
+배포할 때마다 버전을 올리고 [릴리즈](https://github.com/Earth-Bone/GitCawa/releases)를 남겨요.
+
+### v0.1.0-beta (2026-11-10)
+
+첫 베타예요.
+
+- 농장 이미지: `/farm/{username}`
+- 친구 4명: 치이카와, 하치와레, 우사기, 모몽가
+- 점수: 커밋 1점, merge된 PR 10점
+- 친구별 레벨과 몸집 성장, 이름표
+- 내 레벨 게이지, 초사 검정 등급, 다음 친구 안내
+- 최근 활동에 따라 뛰기, 걷기, 잠자기
+- 눈 깜빡임과 표정, 밝은/어두운 테마
+- 한 줄 이미지: `/line/{username}?pet=`
 
 ## 개발
 
