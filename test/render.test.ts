@@ -5,7 +5,7 @@ import { escapeXml, farm, line, message, petSize } from '../src/render';
 const busy: Activity = { commits: 500, mergedPrs: 3, recentDays: [2, 0, 0], mergedRecently: false };
 const idle: Activity = { commits: 10, mergedPrs: 0, recentDays: [0, 0, 0], mergedRecently: false };
 
-const images = (svg: string) => svg.match(/<image /g)?.length ?? 0;
+const images = (svg: string) => svg.match(/<image href="data:image\/png/g)?.length ?? 0;
 
 describe('farm', () => {
   it('draws one actor per unlocked character', () => {
@@ -28,7 +28,7 @@ describe('farm', () => {
   it('shows the stats', () => {
     const svg = farm('octocat', progress(busy));
     expect(svg).toContain('@octocat · Lv.11 · 초사 검정 3급');
-    expect(svg).toContain('풀뽑기 500 · 토벌 3');
+    expect(svg).toContain('풀뽑기 500 + 토벌 3×10 = 530점');
   });
 
   it('tags each pet with its own level', () => {
