@@ -4,7 +4,7 @@ GitHub에서 활동할수록 먼작귀 친구들이 자라는 README 농장이�
 
 **현재 버전: v0.2.0-beta** (베타라 규칙과 모양이 바뀔 수 있어요) · [업데이트 내역](#업데이트-내역)
 
-<img src="https://gitcawa.gitcawa.workers.dev/farm/minwoo-3" width="100%" alt="GitCawa farm" />
+<img src="https://gitcawa.gitcawa.workers.dev/farm/minwoo-3" width="600" alt="GitCawa farm" />
 
 > 글꼴: [갈무리](https://github.com/quiple/galmuri) (이민서, SIL Open Font License 1.1)
 >
@@ -15,7 +15,7 @@ GitHub에서 활동할수록 먼작귀 친구들이 자라는 README 농장이�
 프로필 README(`{아이디}/{아이디}` 저장소의 `README.md`)에 아래 한 줄을 넣고, `{username}`을 내 GitHub 아이디로 바꾸면 끝이에요. 가입은 필요 없어요.
 
 ```md
-<img src="https://gitcawa.gitcawa.workers.dev/farm/{username}" width="100%" alt="GitCawa farm" />
+<img src="https://gitcawa.gitcawa.workers.dev/farm/{username}" width="600" alt="GitCawa farm" />
 ```
 
 ## 어떻게 자라나요?
