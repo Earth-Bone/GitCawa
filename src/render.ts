@@ -17,6 +17,7 @@ const BASE_CSS = `
 .ch .body-g,.ch .spark,.ch .zzz{transform-box:fill-box}
 .ch .body-g{transform-origin:50% 100%}
 .ch .spark{transform-origin:50% 50%}
+.ch .face{transform-box:fill-box;transform-origin:50% 50%}
 .ch .eyes-closed,.ch .eyes-happy,.ch .spark,.ch .zzz{opacity:0}
 .ch .lid{opacity:0;animation:lid var(--blink,4.2s) linear infinite}
 .st-sleep .body-g{animation:snooze 3.6s ease-in-out infinite}
@@ -83,16 +84,27 @@ export function character(id: CharacterId): string {
   );
 }
 
+/** soft shadow that keeps a pet on the grass */
+const shadow = (size: number) =>
+  `<ellipse cx="${size / 2}" cy="${size - 1}" rx="${fx(size * 0.28)}" ry="${fx(size * 0.06)}" fill="rgba(30,50,20,.22)"/>`;
+
+const fx = (v: number) => Number(v.toFixed(2));
+
 function actor(cls: string, id: CharacterId, x: number, y: number, size: number, inner = ''): string {
   return (
-    `<g class="${cls}" transform="translate(${x} ${y})"><g class="pos">${inner}` +
-    `<svg width="${size}" height="${size}" viewBox="0 0 100 100" overflow="visible"><g class="ch">${character(id)}</g></svg></g></g>`
+    `<g class="${cls}" transform="translate(${x} ${y})"><g class="pos" style="transform-origin:${size / 2}px ${size}px">` +
+    shadow(size) +
+    inner +
+    `<svg width="${size}" height="${size}" viewBox="0 0 100 100" overflow="visible"><g class="ch"><g class="face">${character(id)}</g></g></svg></g></g>`
   );
 }
 
-function sleeper(id: CharacterId, x: number, y: number, size: number, inner = ''): string {
+function sleeper(id: CharacterId, x: number, y: number, size: number, inner = '', scale = 1): string {
+  const h = size / 2;
   return (
-    `<g transform="translate(${x} ${y})">${inner}` +
+    `<g transform="translate(${x} ${y}) translate(${h} ${size}) scale(${fx(scale)}) translate(${-h} ${-size})">` +
+    shadow(size) +
+    inner +
     `<svg width="${size}" height="${size}" viewBox="0 0 100 100" overflow="visible"><g class="ch st-sleep">${character(id)}</g></svg></g>`
   );
 }
@@ -129,13 +141,16 @@ function meadow(w: number, h: number): string {
   );
 }
 
-/** farm lanes by feet position, back to front */
+/** farm lanes, back to front; each pet roams its own band of the meadow so the paint order stays right */
 const LANES = [
-  { feet: 190, x: 470 },
-  { feet: 202, x: 250 },
-  { feet: 222, x: 60 },
-  { feet: 240, x: 380 },
+  { x: 470, feet: 172, minY: 150, maxY: 190 },
+  { x: 250, feet: 188, minY: 166, maxY: 206 },
+  { x: 60, feet: 210, minY: 190, maxY: 228 },
+  { x: 380, feet: 230, minY: 210, maxY: 248 },
 ];
+
+/** pets further back (higher up) look smaller */
+export const depth = (feet: number) => 0.72 + (0.33 * (feet - 150)) / 100;
 
 /** pets grow from 64px at Lv.1 to 88px at Lv.40 */
 export const petSize = (level: number) => Math.round(64 + (24 * (Math.min(level, 40) - 1)) / 39);
@@ -160,9 +175,11 @@ export function farm(username: string, p: Progress): string {
     const lane = LANES[(i + LANES.length - pets.length) % LANES.length];
     const size = petSize(pet.level);
     const tag = nameTag(`${art(pet.id).name} Lv.${pet.level}`, size / 2, size);
-    if (p.mood === 'sleepy') return sleeper(pet.id, lane.x, lane.feet - size, size, tag);
+    if (p.mood === 'sleepy') return sleeper(pet.id, lane.x, lane.feet - size, size, tag, depth(lane.feet));
     const cls = `a${i}`;
-    css.push(keyframes(cls, lane.x, plan(p.mood, lane.x, 20, 500, rng(`${username}/${pet.id}`))));
+    const box = { minX: 10, maxX: 520, minY: lane.minY, maxY: lane.maxY };
+    const steps = plan(p.mood, lane.x, lane.feet, box, rng(`${username}/${pet.id}`));
+    css.push(keyframes(cls, lane.x, steps, { y0: lane.feet, depth }));
     return actor(cls, pet.id, lane.x, lane.feet - size, size, tag);
   });
   const next = p.nextPet ? `다음 친구: ${art(p.nextPet.id).name}까지 ${p.nextPet.need}점` : `친구 ${p.pets.length}명이 모두 모였어요`;
