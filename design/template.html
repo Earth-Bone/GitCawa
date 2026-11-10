@@ -1,0 +1,309 @@
+<title>chiicawa 캐릭터 시안</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Gowun+Dodum&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: state sheet per character first, then the two README renders (farm, line) */
+:root {
+  --bg: #f3f7f1; --surface: #ffffff; --tile: #eef4ee; --fg: #26302a; --muted: #5f6d64; --line: #d6e0d8; --accent: #3f7d4e;
+  --sky: #cfe8f7; --sky-2: #e6f4fb; --hill: #a9d39a; --grass: #7cbf6a; --grass-2: #5fa651; --tuft: #3f8a3d;
+  --sign: #b98a5a; --sign-2: #8a6340; --chip-bg: rgba(255,255,255,.88); --chip-fg: #26302a; --zzz: #6d86b8;
+  --font-display: "Gaegu", "Gowun Dodum", system-ui, sans-serif;
+  --font-body: "Gowun Dodum", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #141a17; --surface: #1c2420; --tile: #233029; --fg: #e4ece6; --muted: #9aaba0; --line: #2d3832; --accent: #8fd09c;
+    --sky: #1d2b4a; --sky-2: #283a5e; --hill: #2f5a3a; --grass: #3a6e3c; --grass-2: #30602f; --tuft: #234a24;
+    --sign: #8a6845; --sign-2: #5e4430; --chip-bg: rgba(20,26,23,.85); --chip-fg: #e4ece6; --zzz: #9fb6e6;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #141a17; --surface: #1c2420; --tile: #233029; --fg: #e4ece6; --muted: #9aaba0; --line: #2d3832; --accent: #8fd09c;
+  --sky: #1d2b4a; --sky-2: #283a5e; --hill: #2f5a3a; --grass: #3a6e3c; --grass-2: #30602f; --tuft: #234a24;
+  --sign: #8a6845; --sign-2: #5e4430; --chip-bg: rgba(20,26,23,.85); --chip-fg: #e4ece6; --zzz: #9fb6e6;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 15px; line-height: 1.6; }
+.wrap { max-width: 920px; margin: 0 auto; padding-block: 40px 64px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; gap: 48px; }
+header { display: grid; gap: 8px; }
+.eyebrow { font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(40px, 7vw, 60px); line-height: 1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--font-display); font-weight: 700; font-size: 32px; line-height: 1.1; margin: 0; text-wrap: balance; }
+.lede, .sec-head p { color: var(--muted); max-width: 62ch; margin: 0; }
+section { display: grid; gap: 16px; }
+.sec-head { display: grid; gap: 4px; }
+
+.sheet { display: grid; gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: grid; gap: 12px; min-width: 0; }
+.name-row { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.name { font-family: var(--font-display); font-size: 28px; font-weight: 700; line-height: 1; }
+.desc { color: var(--muted); font-size: 14px; }
+.states { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 600px) { .states { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.tile { background: var(--tile); border-radius: 8px; padding: 32px 8px 10px; display: grid; gap: 4px; justify-items: center; min-width: 0; }
+.tile svg { width: 100%; max-width: 150px; height: auto; display: block; overflow: visible; }
+.tile b { font-weight: 400; font-family: var(--font-display); font-size: 19px; line-height: 1; }
+.tile span { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: center; }
+
+.readme { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.readme-bar { padding: 10px 14px; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.readme-bar b { color: var(--fg); font-weight: 500; }
+.readme-body { padding: 16px; }
+.scene { width: 100%; max-width: 100%; height: auto; display: block; border-radius: 6px; }
+
+.notes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 32px; margin: 0; padding: 0; list-style: none; }
+@media (max-width: 720px) { .notes { grid-template-columns: minmax(0, 1fr); } }
+.notes li { display: grid; gap: 2px; min-width: 0; }
+.notes b { font-weight: 400; font-family: var(--font-display); font-size: 21px; line-height: 1.2; }
+.notes span { color: var(--muted); font-size: 14px; }
+footer { color: var(--muted); font-size: 13px; border-top: 1px solid var(--line); padding-top: 16px; }
+
+/* character parts */
+.ch .body-g, .ch .spark, .ch .zzz { transform-box: fill-box; }
+.ch .body-g { transform-origin: 50% 100%; }
+.ch .spark { transform-origin: 50% 50%; }
+.ch .eyes-closed, .ch .eyes-happy, .ch .spark, .ch .zzz { opacity: 0; }
+.ch .lid { opacity: 0; animation: lid var(--blink, 4.2s) linear infinite; }
+
+/* states for the sheet */
+.st-idle .body-g { animation: breathe 2.4s ease-in-out infinite; }
+.st-walk .body-g { animation: waddle .7s linear infinite; }
+.st-happy .body-g { animation: hop 1s linear infinite; }
+.st-happy .eyes-happy { opacity: 1; }
+.st-happy .spark { opacity: 1; animation: twinkle 1s ease-in-out infinite; }
+.st-sleep .body-g { animation: snooze 3.6s ease-in-out infinite; }
+.st-sleep .eyes-closed { opacity: 1; }
+.st-sleep .zzz { opacity: 1; animation: zzz 2.4s ease-in-out infinite; }
+.st-happy .lid, .st-sleep .lid { animation: none; opacity: 0; }
+
+@keyframes breathe { 0%, 100% { transform: scale(1, 1) } 50% { transform: scale(1.03, .96) } }
+@keyframes snooze { 0%, 100% { transform: rotate(-6deg) scale(1, 1) } 50% { transform: rotate(-6deg) scale(1.03, .95) } }
+@keyframes waddle {
+  0% { transform: translateY(0) rotate(-5deg) } 25% { transform: translateY(-4px) rotate(0deg) }
+  50% { transform: translateY(0) rotate(5deg) } 75% { transform: translateY(-4px) rotate(0deg) } 100% { transform: translateY(0) rotate(-5deg) }
+}
+@keyframes hop {
+  0% { transform: translateY(0) scale(1.08, .9) } 15% { transform: translateY(-6px) scale(.94, 1.08) }
+  40% { transform: translateY(-22px) scale(1, 1) } 65% { transform: translateY(0) scale(1.06, .93) }
+  80% { transform: translateY(0) scale(1, 1) } 100% { transform: translateY(0) scale(1.08, .9) }
+}
+@keyframes lid { 0%, 93% { opacity: 0 } 93.5%, 96.5% { opacity: 1 } 97%, 100% { opacity: 0 } }
+@keyframes twinkle { 0%, 100% { transform: scale(.6) } 50% { transform: scale(1.1) } }
+@keyframes zzz { 0% { transform: translate(0, 4px); opacity: 0 } 30% { opacity: 1 } 100% { transform: translate(6px, -8px); opacity: 0 } }
+@media (prefers-reduced-motion: reduce) { .tile *, .scene * { animation: none !important; } }
+</style>
+<style id="gen"></style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">비공식 팬 프로젝트 · 캐릭터 시안 v2</div>
+    <h1>먼작귀 캐릭터 시안</h1>
+    <p class="lede">캐릭터 그림 네 장으로 만든 시안이에요. 그림 전체를 늘리고 기울여서 움직이고, 눈 위에 덮개를 얹어 깜빡임과 표정을 만들어요. 모든 움직임은 README에서도 돌아가는 CSS 애니메이션이에요. 수치는 전부 예시예요.</p>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <h2>상태별 움직임</h2>
+      <p>각 움직임은 GitHub 활동과 연결돼요. 커밋한 날은 걷고, PR이 merge되면 기뻐하고, 활동이 없으면 잠을 자요.</p>
+    </div>
+    <div class="sheet" id="sheet"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>farm 미리보기</h2>
+      <p>캐릭터들이 걷다가 멈추고, 가끔 뛰어올라요. 한 마리는 구석에서 자고 있어요.</p>
+    </div>
+    <div class="readme">
+      <div class="readme-bar"><b>README.md</b> · username / username</div>
+      <div class="readme-body"><svg class="scene" id="farm" viewBox="0 0 600 300" role="img" aria-label="들판에서 먼작귀 캐릭터들이 걷고 뛰고 자는 farm 화면"></svg></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <h2>line 미리보기</h2>
+      <p>대표 캐릭터 하나가 걸어가다 중간에 한 번 뛰어올라요.</p>
+    </div>
+    <div class="readme">
+      <div class="readme-bar"><b>README.md</b> · line 모드</div>
+      <div class="readme-body"><svg class="scene" id="line" viewBox="0 0 600 130" role="img" aria-label="치이카와가 가로로 걸어가는 line 화면"></svg></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><h2>이 시안에서 확인할 것</h2></div>
+    <ul class="notes">
+      <li><b>그림 한 장으로 움직여요</b><span>그림 전체를 늘이고, 기울이고, 뛰게 해서 대기, 걷기, 기쁨, 잠을 표현해요. 원래 그림체는 그대로예요.</span></li>
+      <li><b>눈 덮개로 표정을 바꿔요</b><span>눈 위치에 피부색 덮개와 선을 얹어서 깜빡임, 웃는 눈, 감은 눈을 만들어요. 캐릭터마다 깜빡이는 간격이 달라요.</span></li>
+      <li><b>farm은 일정표대로 재생돼요</b><span>"4초 걷기, 2초 쉬기, 2초 점프" 같은 일정을 CSS 키프레임으로 바꿔요. 사용자 활동에 맞춰 서버가 일정을 정하면 돼요.</span></li>
+      <li><b>클릭과 드래그는 없어요</b><span>README의 이미지는 마우스 입력을 받지 않아서 자동 재생만 넣었어요.</span></li>
+    </ul>
+  </section>
+
+  <footer>비공식 팬 프로젝트예요. 치이카와와 등장 캐릭터의 권리는 나가노 작가와 치이카와 위원회에 있어요.</footer>
+</div>
+
+<script>
+const DATA = /*__DATA__*/;
+const SPRITE = 320;
+
+const star = (cx, cy, r) => `<path d="M${cx} ${cy - r}Q${cx} ${cy} ${cx + r} ${cy}Q${cx} ${cy} ${cx} ${cy + r}Q${cx} ${cy} ${cx - r} ${cy}Q${cx} ${cy} ${cx} ${cy - r}Z" fill="#ffd54a" stroke="#4a3a30" stroke-width="1.2" stroke-linejoin="round"/>`;
+const extras = () =>
+  `<g class="spark">${star(8, 14, 6)}${star(92, 10, 5)}${star(96, 44, 4)}</g>` +
+  `<g class="zzz"><text x="78" y="20" font-family="Gaegu, sans-serif" font-weight="700" font-size="16" fill="var(--zzz)">z</text><text x="88" y="8" font-family="Gaegu, sans-serif" font-weight="700" font-size="11" fill="var(--zzz)">z</text></g>`;
+
+/* eye overlays, drawn in sprite pixels and placed with one transform */
+function faces(c) {
+  const sw = 5;
+  const cover = c.eyes.map(o => `<ellipse cx="${o.cx}" cy="${o.cy}" rx="${o.rx + 4}" ry="${o.ry + 4}" fill="${o.skin}"/>`).join('');
+  const arc = up => c.eyes.map(o => {
+    const x0 = o.cx - o.rx * 1.05, x1 = o.cx + o.rx * 1.05;
+    const d = up
+      ? `M${x0} ${o.cy + o.ry * .4}Q${o.cx} ${o.cy - o.ry * .9} ${x1} ${o.cy + o.ry * .4}`
+      : `M${x0} ${o.cy}Q${o.cx} ${o.cy + o.ry * .9} ${x1} ${o.cy}`;
+    return `<path d="${d}" fill="none" stroke="${c.ink}" stroke-width="${sw}" stroke-linecap="round"/>`;
+  }).join('');
+  return `<g class="lid" style="--blink:${c.blink}s">${cover}${arc(false)}</g>` +
+    `<g class="eyes-closed">${cover}${arc(false)}</g><g class="eyes-happy">${cover}${arc(true)}</g>`;
+}
+function charSVG(k) {
+  const c = DATA[k], z = c.scale, u = 100 * z / SPRITE;
+  const ox = 50 - 50 * z + c.dx * u, oy = 100 - 100 * z;
+  return `<g class="body-g"><image href="${c.img}" x="${ox}" y="${oy}" width="${100 * z}" height="${100 * z}"/>` +
+    `<g transform="translate(${ox} ${oy}) scale(${u})">${faces(c)}</g></g>${extras()}`;
+}
+
+const STATES = [
+  ['idle', '대기', '기본'],
+  ['walk', '걷기', '커밋한 날'],
+  ['happy', '기쁨', 'PR merge · 토벌 성공'],
+  ['sleep', '잠', '활동 없는 날']
+];
+document.getElementById('sheet').innerHTML = Object.entries(DATA).map(([k, c]) => `
+  <article class="card">
+    <div class="name-row"><span class="name">${c.name}</span><span class="desc">${c.desc}</span></div>
+    <div class="states">${STATES.map(([s, label, meaning]) => `
+      <div class="tile">
+        <svg viewBox="-10 -10 120 112" role="img" aria-label="${c.name} ${label}"><g class="ch st-${s}">${charSVG(k)}</g></svg>
+        <b>${label}</b><span>${meaning}</span>
+      </div>`).join('')}
+    </div>
+  </article>`).join('');
+
+/* farm/line: turn a schedule into CSS keyframes, the same way a server would write them into the SVG */
+const HOP = [[0, 0, 1.08, .9], [.15, -6, .94, 1.08], [.4, -22, 1, 1], [.65, 0, 1.06, .93], [.8, 0, 1, 1], [1, 0, 1.08, .9]];
+function bodyAt(type, u) {
+  if (type === 'walk') {
+    const p = u / .7 * 2 * Math.PI;
+    return { ty: -4 * Math.abs(Math.sin(p)), rot: -5 * Math.cos(p), sx: 1, sy: 1 };
+  }
+  if (type === 'happy') {
+    const p = u % 1;
+    let i = 0; while (p > HOP[i + 1][0]) i++;
+    const [a, b] = [HOP[i], HOP[i + 1]], f = (p - a[0]) / (b[0] - a[0]);
+    const L = j => a[j] + (b[j] - a[j]) * f;
+    return { ty: L(1), rot: 0, sx: L(2), sy: L(3) };
+  }
+  const c = (1 - Math.cos(2 * Math.PI * u / 2.4)) / 2;
+  return { ty: 0, rot: 0, sx: 1 + .03 * c, sy: 1 - .04 * c };
+}
+function schedule(id, x0, steps) {
+  const segs = []; let t = 0, x = x0;
+  for (const [type, dur, to] of steps) {
+    const x1 = type === 'walk' ? to : x;
+    segs.push({ type, t0: t, t1: t + dur, x0: x, x1 });
+    t += dur; x = x1;
+  }
+  const T = t, pct = s => (s / T * 100).toFixed(3) + '%';
+  const pos = segs.map(s => `${pct(s.t0)}{transform:translateX(${s.x0 - x0}px)}${pct(s.t1)}{transform:translateX(${s.x1 - x0}px)}`).join('');
+  let body = '';
+  const toggles = { eh: [], sp: [], ld: [] };
+  const n = Math.round(T / .05);
+  for (let i = 0; i <= n; i++) {
+    const tt = Math.min(T, i * .05), seg = segs.find(s => tt < s.t1) || segs[segs.length - 1];
+    const v = bodyAt(seg.type, tt - seg.t0), p = pct(tt);
+    body += `${p}{transform:translateY(${v.ty.toFixed(2)}px) rotate(${v.rot.toFixed(2)}deg) scale(${v.sx.toFixed(3)},${v.sy.toFixed(3)})}`;
+    const happy = seg.type === 'happy' ? 1 : 0;
+    for (const [key, val] of [['eh', happy], ['sp', happy], ['ld', 1 - happy]]) {
+      const list = toggles[key];
+      if (!list.length || list[list.length - 1][1] !== val || i === n) list.push([p, val]);
+    }
+  }
+  const kf = (name, body) => `@keyframes ${name}-${id}{${body}}`;
+  const tog = (key, prop) => toggles[key].map(([p, v]) => `${p}{${prop}:${v}}`).join('');
+  return [
+    kf('pos', pos), kf('body', body), kf('eh', tog('eh', 'opacity')), kf('sp', tog('sp', 'opacity')),
+    kf('ld', tog('ld', 'visibility').replaceAll(':1', ':visible').replaceAll(':0', ':hidden')),
+    `.${id} .pos{animation:pos-${id} ${T}s linear infinite}`,
+    `.${id} .body-g{animation:body-${id} ${T}s linear infinite}`,
+    `.${id} .eyes-happy{animation:eh-${id} ${T}s step-end infinite}`,
+    `.${id} .spark{animation:sp-${id} ${T}s step-end infinite,twinkle 1s ease-in-out infinite}`,
+    `.${id} .lid{animation:lid var(--blink) linear infinite,ld-${id} ${T}s step-end infinite}`
+  ].join('\n');
+}
+const label = (x, y, text) =>
+  `<rect x="${x}" y="${y}" width="${text.length * 7.6 + 16}" height="22" rx="4" fill="var(--chip-bg)"/>` +
+  `<text x="${x + 8}" y="${y + 15}" font-family="IBM Plex Mono, ui-monospace, monospace" font-size="12" fill="var(--chip-fg)">${text}</text>`;
+const nameTag = text =>
+  `<rect x="${38 - text.length * 7}" y="-26" width="${text.length * 14}" height="20" rx="10" fill="var(--chip-bg)"/>` +
+  `<text x="38" y="-11.5" text-anchor="middle" font-family="Gaegu, sans-serif" font-weight="700" font-size="15" fill="var(--chip-fg)">${text}</text>`;
+const actor = (id, k, x0, y, size, extra = '') =>
+  `<g class="${id}" transform="translate(${x0} ${y})"><g class="pos">${extra}<svg width="${size}" height="${size}" viewBox="0 0 100 100" overflow="visible"><g class="ch">${charSVG(k)}</g></svg></g></g>`;
+
+let seed = 7;
+const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+function tufts(count, y0, y1, w) {
+  let s = '';
+  for (let i = 0; i < count; i++) {
+    const x = Math.round(rnd() * (w - 12) / 4) * 4, y = Math.round((y0 + rnd() * (y1 - y0)) / 4) * 4;
+    s += `<path d="M${x} ${y}q2 -7 4 -9M${x + 5} ${y}q0 -8 1 -11M${x + 10} ${y}q-1 -6 -3 -8" fill="none" stroke="var(--tuft)" stroke-width="2.4" stroke-linecap="round"/>`;
+  }
+  return s;
+}
+
+const css = [
+  schedule('a1', 470, [['happy', 2], ['walk', 3.5, 340], ['idle', 1.5], ['happy', 1], ['walk', 3.5, 470], ['idle', 2.5]]),
+  schedule('a4', 250, [['idle', 1.5], ['walk', 3, 150], ['happy', 2], ['idle', 2], ['walk', 3, 250], ['idle', 2.5]]),
+  schedule('a2', 60, [['walk', 4, 200], ['idle', 2], ['happy', 2], ['walk', 4, 60], ['idle', 2]]),
+  schedule('a3', 380, [['idle', 2], ['walk', 3.5, 250], ['idle', 1.5], ['walk', 4, 400], ['happy', 2], ['idle', 1]]),
+  schedule('l1', -90, [['walk', 8, 220], ['happy', 2], ['walk', 7, 460], ['idle', 2], ['walk', 7, 700]])
+];
+document.getElementById('gen').textContent = css.join('\n');
+
+document.getElementById('farm').innerHTML = `
+  <rect width="600" height="300" fill="var(--sky)"/>
+  <rect width="600" height="40" fill="var(--sky-2)"/>
+  <ellipse cx="120" cy="128" rx="190" ry="44" fill="var(--hill)"/>
+  <ellipse cx="480" cy="124" rx="210" ry="48" fill="var(--hill)"/>
+  <rect y="116" width="600" height="184" fill="var(--grass)"/>
+  <rect y="116" width="600" height="5" fill="var(--grass-2)"/>
+  ${tufts(28, 140, 292, 600)}
+  <g transform="translate(528 70)">
+    <rect x="10" y="22" width="8" height="40" rx="2" fill="var(--sign-2)"/>
+    <rect x="-16" y="0" width="60" height="30" rx="6" fill="var(--sign)"/>
+    <text x="14" y="20" text-anchor="middle" font-family="Gaegu, sans-serif" font-weight="700" font-size="16" fill="#fff">풀뽑기</text>
+  </g>
+  ${actor('a1', 'usagi', 470, 118, 80)}
+  ${actor('a4', 'momonga', 250, 128, 80)}
+  ${actor('a2', 'chiikawa', 60, 150, 80)}
+  ${actor('a3', 'hachiware', 380, 172, 80)}
+  <g transform="translate(470 206)"><svg width="72" height="72" viewBox="0 0 100 100" overflow="visible"><g class="ch st-sleep">${charSVG('chiikawa')}</g></svg></g>
+  ${label(12, 12, '@username · 예시 수치')}
+  ${label(12, 268, '풀뽑기 1,284 · 토벌 37 · 초사 검정 5급')}
+`;
+
+document.getElementById('line').innerHTML = `
+  <rect width="600" height="130" fill="var(--sky)"/>
+  <rect y="96" width="600" height="34" fill="var(--grass)"/>
+  <rect y="96" width="600" height="4" fill="var(--grass-2)"/>
+  ${tufts(10, 112, 126, 600)}
+  ${actor('l1', 'chiikawa', -90, 30, 76, nameTag('Lv.12'))}
+`;
+</script>
