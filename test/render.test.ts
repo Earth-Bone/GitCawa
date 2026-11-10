@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { progress, type Activity } from '../src/game';
-import { escapeXml, farm, line, message } from '../src/render';
+import { escapeXml, farm, line, message, petSize } from '../src/render';
 
 const busy: Activity = { commits: 500, mergedPrs: 3, recentDays: [2, 0, 0], mergedRecently: false };
 const idle: Activity = { commits: 10, mergedPrs: 0, recentDays: [0, 0, 0], mergedRecently: false };
@@ -26,11 +26,37 @@ describe('farm', () => {
   });
 
   it('shows the stats', () => {
-    expect(farm('octocat', progress(busy))).toContain('풀뽑기 500 · 토벌 3 · 초사 검정 3급');
+    const svg = farm('octocat', progress(busy));
+    expect(svg).toContain('@octocat · Lv.11 · 초사 검정 3급');
+    expect(svg).toContain('풀뽑기 500 · 토벌 3');
+  });
+
+  it('tags each pet with its own level', () => {
+    const svg = farm('octocat', progress(busy));
+    expect(svg).toContain('치이카와 Lv.11');
+    expect(svg).toContain('모몽가 Lv.3');
+  });
+
+  it('shows the way to the next level and pet', () => {
+    const svg = farm('octocat', progress(idle));
+    expect(svg).toContain('Lv.2까지 40점');
+    expect(svg).toContain('다음 친구: 하치와레까지 40점');
+  });
+
+  it('celebrates a full farm', () => {
+    expect(farm('octocat', progress(busy))).toContain('친구 4명이 모두 모였어요');
   });
 
   it('escapes the username', () => {
     expect(farm('<x>', progress(idle))).toContain('@&#60;x&#62;');
+  });
+});
+
+describe('petSize', () => {
+  it('grows from 64px to 88px and stops at Lv.40', () => {
+    expect(petSize(1)).toBe(64);
+    expect(petSize(40)).toBe(88);
+    expect(petSize(99)).toBe(88);
   });
 });
 

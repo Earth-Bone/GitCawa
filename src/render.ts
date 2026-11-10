@@ -1,13 +1,13 @@
 import { art, SPRITE_SIZE, type CharacterId } from './characters';
-import type { Progress } from './game';
+import { POINTS_PER_LEVEL, type Progress } from './game';
 import { keyframes, plan, rng, type Step } from './motion';
 
 const FONT = "'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif";
 
 /** shared look; the scene follows the viewer's light or dark theme */
 const BASE_CSS = `
-:root{--sky:#cfe8f7;--sky2:#e6f4fb;--hill:#a9d39a;--grass:#7cbf6a;--grass2:#5fa651;--tuft:#3f8a3d;--sign:#b98a5a;--sign2:#8a6340;--chip:rgba(255,255,255,.88);--chip-fg:#26302a;--zzz:#6d86b8}
-@media (prefers-color-scheme:dark){:root{--sky:#1d2b4a;--sky2:#283a5e;--hill:#2f5a3a;--grass:#3a6e3c;--grass2:#30602f;--tuft:#234a24;--sign:#8a6845;--sign2:#5e4430;--chip:rgba(20,26,23,.85);--chip-fg:#e4ece6;--zzz:#9fb6e6}}
+:root{--sky:#cfe8f7;--sky2:#e6f4fb;--hill:#a9d39a;--grass:#7cbf6a;--grass2:#5fa651;--tuft:#3f8a3d;--sign:#b98a5a;--sign2:#8a6340;--chip:rgba(255,255,255,.88);--chip-fg:#26302a;--zzz:#6d86b8;--bar-bg:rgba(38,48,42,.15)}
+@media (prefers-color-scheme:dark){:root{--sky:#1d2b4a;--sky2:#283a5e;--hill:#2f5a3a;--grass:#3a6e3c;--grass2:#30602f;--tuft:#234a24;--sign:#8a6845;--sign2:#5e4430;--chip:rgba(20,26,23,.85);--chip-fg:#e4ece6;--zzz:#9fb6e6;--bar-bg:rgba(228,236,230,.2)}}
 .ch .body-g,.ch .spark,.ch .zzz{transform-box:fill-box}
 .ch .body-g{transform-origin:50% 100%}
 .ch .spark{transform-origin:50% 50%}
@@ -23,6 +23,13 @@ const BASE_CSS = `
 @keyframes zzz{0%{transform:translate(0,4px);opacity:0}30%{opacity:1}100%{transform:translate(6px,-8px);opacity:0}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 `;
+
+/** rough text width: Hangul is about one em wide, Latin and digits about 0.6 em */
+export function textWidth(text: string, size: number): number {
+  let w = 0;
+  for (const ch of text) w += /[\u1100-\u11ff\u3130-\u318f\uac00-\ud7af]/.test(ch) ? size * 0.92 : size * 0.6;
+  return Math.ceil(w);
+}
 
 export function escapeXml(s: string): string {
   return s.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
@@ -95,18 +102,19 @@ function tufts(rand: () => number, count: number, y0: number, y1: number, w: num
 }
 
 function chip(x: number, y: number, text: string): string {
-  const w = Math.round(text.length * 7.4 + 16);
+  const w = textWidth(text, 12) + 16;
   return (
     `<rect x="${x}" y="${y}" width="${w}" height="22" rx="4" fill="var(--chip)"/>` +
     `<text x="${x + 8}" y="${y + 15}" font-family="${FONT}" font-size="12" fill="var(--chip-fg)">${escapeXml(text)}</text>`
   );
 }
 
-function nameTag(text: string): string {
-  const w = text.length * 9 + 16;
+/** pill under the feet of a pet that is `size` px tall */
+function nameTag(text: string, cx: number, size: number): string {
+  const w = textWidth(text, 11.5) + 14;
   return (
-    `<rect x="${38 - w / 2}" y="-26" width="${w}" height="20" rx="10" fill="var(--chip)"/>` +
-    `<text x="38" y="-11.5" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="13" fill="var(--chip-fg)">${escapeXml(text)}</text>`
+    `<rect x="${cx - w / 2}" y="${size + 2}" width="${w}" height="18" rx="9" fill="var(--chip)"/>` +
+    `<text x="${cx}" y="${size + 15}" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="11.5" fill="var(--chip-fg)">${escapeXml(text)}</text>`
   );
 }
 
@@ -117,25 +125,42 @@ function svg(w: number, h: number, label: string, css: string, body: string): st
   );
 }
 
-/** farm lanes, back to front */
+/** farm lanes by feet position, back to front */
 const LANES = [
-  { y: 118, x: 470 },
-  { y: 128, x: 250 },
-  { y: 150, x: 60 },
-  { y: 172, x: 380 },
+  { feet: 190, x: 470 },
+  { feet: 202, x: 250 },
+  { feet: 222, x: 60 },
+  { feet: 240, x: 380 },
 ];
+
+/** pets grow from 64px at Lv.1 to 88px at Lv.40 */
+export const petSize = (level: number) => Math.round(64 + (24 * (Math.min(level, 40) - 1)) / 39);
+
+function levelBar(p: Progress): string {
+  const filled = p.toNextLevel === 0 ? 1 : 1 - p.toNextLevel / POINTS_PER_LEVEL;
+  const text = p.toNextLevel === 0 ? '최고 레벨이에요' : `Lv.${p.level + 1}까지 ${p.toNextLevel}점`;
+  return (
+    `<g transform="translate(424 262)"><rect width="164" height="30" rx="4" fill="var(--chip)"/>` +
+    `<text x="8" y="13" font-family="${FONT}" font-size="11" fill="var(--chip-fg)">${text}</text>` +
+    `<rect x="8" y="19" width="148" height="5" rx="2.5" fill="var(--bar-bg)"/>` +
+    `<rect x="8" y="19" width="${Math.round(148 * filled)}" height="5" rx="2.5" fill="#f2b84b"/></g>`
+  );
+}
 
 export function farm(username: string, p: Progress): string {
   const rand = rng(username);
-  const ids = p.unlocked.slice(-LANES.length);
+  const pets = p.pets.slice(-LANES.length);
   const css: string[] = [];
-  const actors = ids.map((id, i) => {
-    const lane = LANES[(i + LANES.length - ids.length) % LANES.length];
-    if (p.mood === 'sleepy') return sleeper(id, lane.x, lane.y, 80);
+  const actors = pets.map((pet, i) => {
+    const lane = LANES[(i + LANES.length - pets.length) % LANES.length];
+    const size = petSize(pet.level);
+    const tag = nameTag(`${art(pet.id).name} Lv.${pet.level}`, size / 2, size);
+    if (p.mood === 'sleepy') return sleeper(pet.id, lane.x, lane.feet - size, size, tag);
     const cls = `a${i}`;
-    css.push(keyframes(cls, lane.x, plan(p.mood, lane.x, 20, 500, rng(`${username}/${id}`))));
-    return actor(cls, id, lane.x, lane.y, 80);
+    css.push(keyframes(cls, lane.x, plan(p.mood, lane.x, 20, 500, rng(`${username}/${pet.id}`))));
+    return actor(cls, pet.id, lane.x, lane.feet - size, size, tag);
   });
+  const next = p.nextPet ? `다음 친구: ${art(p.nextPet.id).name}까지 ${p.nextPet.need}점` : `친구 ${p.pets.length}명이 모두 모였어요`;
 
   const body =
     `<rect width="600" height="300" fill="var(--sky)"/><rect width="600" height="40" fill="var(--sky2)"/>` +
@@ -146,15 +171,17 @@ export function farm(username: string, p: Progress): string {
     `<rect x="-16" y="0" width="60" height="30" rx="6" fill="var(--sign)"/>` +
     `<text x="14" y="20" text-anchor="middle" font-family="${FONT}" font-weight="700" font-size="14" fill="#fff">풀뽑기</text></g>` +
     actors.join('') +
-    chip(12, 12, `@${username} · Lv.${p.level}`) +
-    chip(12, 266, `풀뽑기 ${p.commits.toLocaleString('en-US')} · 토벌 ${p.mergedPrs.toLocaleString('en-US')} · 초사 검정 ${p.grade}급`);
+    chip(12, 12, `@${username} · Lv.${p.level} · 초사 검정 ${p.grade}급`) +
+    chip(12, 40, next) +
+    chip(12, 266, `풀뽑기 ${p.commits.toLocaleString('en-US')} · 토벌 ${p.mergedPrs.toLocaleString('en-US')}`) +
+    levelBar(p);
 
   return svg(600, 300, `${username}의 먼작귀 농장`, css.join('\n'), body);
 }
 
 export function line(username: string, p: Progress, pet: CharacterId): string {
   const rand = rng(username);
-  const tag = nameTag(`${art(pet).name} Lv.${p.level}`);
+  const tag = nameTag(`${art(pet).name} Lv.${p.level}`, 38, 76);
   let css = '';
   let who: string;
   if (p.mood === 'sleepy') {
